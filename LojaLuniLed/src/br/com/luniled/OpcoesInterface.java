@@ -6,7 +6,7 @@ public interface OpcoesInterface {
 	
 	public abstract void consultarEstoque();
 	
-	public abstract void consultarClienteCadastrado();
+	public abstract void consultarClientesCadastrados();
 	
 	public abstract void realizarVenda();
 	
