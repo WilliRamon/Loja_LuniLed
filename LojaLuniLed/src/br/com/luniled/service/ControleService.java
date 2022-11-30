@@ -1,19 +1,22 @@
-package br.com.luniled;
+package br.com.luniled.service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public class Service implements OpcoesInterface{
+import br.com.luniled.OpcoesInterface;
+import br.com.luniled.vo.Cliente;
+import br.com.luniled.vo.Produto;
+
+public class ControleService implements OpcoesInterface{
 	
 	Scanner ler = new Scanner(System.in);
 	Produto produto = new Produto();
 	Cliente cliente = new Cliente();
 	ArrayList<Produto> listaProdutos = new ArrayList<>();
 	ArrayList<Cliente> listaClientes = new ArrayList<>();
-	Consumer<String> print = System.out::println;
-	Consumer<ArrayList<Produto>> print2 = System.out::println;
 
 	public void estoque() {
 		listaProdutos.add(new Produto("Notebook", "Eletrônico", "Dell", 123, 5, 3800));
@@ -59,7 +62,33 @@ public class Service implements OpcoesInterface{
 
 	@Override
 	public void cadastrarProduto() {
-		// TODO Auto-generated method stub
+		System.out.println("========CADASTRAR PRODUTOS=======");
+		
+		//ler.nextLine();
+		System.out.println("Nome do Produto: ");
+		produto.setNomeProduto(ler.nextLine());
+		
+		System.out.println("Categoria: ");
+		produto.setCategoria(ler.nextLine());
+		
+		System.out.println("Marca: ");
+		produto.setMarca(ler.nextLine());
+		
+		do {
+			System.out.println("Codigo: ");
+			produto.setCodigo(ler.nextInt());
+			
+		}while(listaProdutos.stream()
+				.anyMatch(lista -> lista.getCodigo() == produto.getCodigo()));
+		//Adicionar um Predicato dentro dessa função
+		
+		System.out.println("Quantidade em Estoque: ");
+		produto.setQuantidadeEstoque(ler.nextInt());
+		
+		System.out.println("Preço: ");
+		produto.setPreco(ler.nextDouble());
+		
+		listaProdutos.add(produto);
 		
 	}
 

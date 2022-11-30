@@ -1,4 +1,4 @@
-package br.com.luniled;
+package br.com.luniled.vo;
 
 public class Produto {
 	
