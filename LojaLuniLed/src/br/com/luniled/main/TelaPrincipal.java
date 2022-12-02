@@ -11,7 +11,6 @@ public class TelaPrincipal {
 		service.estoque();
 //		service.consultarEstoque();
 		service.cadastrarProduto();
-		service.consultarEstoque();
 		
 	}
 

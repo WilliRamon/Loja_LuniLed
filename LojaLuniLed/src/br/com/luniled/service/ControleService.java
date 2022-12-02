@@ -7,11 +7,12 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import br.com.luniled.OpcoesInterface;
+import br.com.luniled.utilitarios.ProdutoUtilitarios;
 import br.com.luniled.vo.Cliente;
 import br.com.luniled.vo.Produto;
 
-public class ControleService implements OpcoesInterface{
-	
+public class ControleService implements OpcoesInterface {
+
 	Scanner ler = new Scanner(System.in);
 	Produto produto = new Produto();
 	Cliente cliente = new Cliente();
@@ -23,17 +24,17 @@ public class ControleService implements OpcoesInterface{
 		listaProdutos.add(new Produto("Monitor", "Eletrônico", "Concordia", 124, 10, 1100.50));
 		listaProdutos.add(new Produto("Caderno", "Papelaria", "jandaia", 125, 20, 55.90));
 	}
-	
+
 	public void clientes() {
 		listaClientes.add(new Cliente("Willi", "Rua Osasco", 1234567, 0));
 		listaClientes.add(new Cliente("Ramon", "Rua Barueri", 2345678, 0));
 		listaClientes.add(new Cliente("Sabino", "Rua Itapevi", 3456789, 0));
 	}
-	
+
 	@Override
 	public void acesso() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -51,77 +52,81 @@ public class ControleService implements OpcoesInterface{
 	@Override
 	public void realizarVenda() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void consultarVendasRealizadas() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void cadastrarProduto() {
 		System.out.println("========CADASTRAR PRODUTOS=======");
-		
-		//ler.nextLine();
-		System.out.println("Nome do Produto: ");
-		produto.setNomeProduto(ler.nextLine());
-		
-		System.out.println("Categoria: ");
-		produto.setCategoria(ler.nextLine());
-		
-		System.out.println("Marca: ");
-		produto.setMarca(ler.nextLine());
-		
+
 		do {
-			System.out.println("Codigo: ");
-			produto.setCodigo(ler.nextInt());
-			
-		}while(listaProdutos.stream()
-				.anyMatch(lista -> lista.getCodigo() == produto.getCodigo()));
-		//Adicionar um Predicato dentro dessa função
-		
-		System.out.println("Quantidade em Estoque: ");
-		produto.setQuantidadeEstoque(ler.nextInt());
-		
-		System.out.println("Preço: ");
-		produto.setPreco(ler.nextDouble());
+			System.out.println("Nome do Produto: ");
+			produto.setNomeProduto(ler.nextLine());
+
+			System.out.println("Categoria: ");
+			produto.setCategoria(ler.nextLine());
+
+			System.out.println("Marca: ");
+			produto.setMarca(ler.nextLine());
+
+			do {
+				System.out.println("Codigo: ");
+				produto.setCodigo(ler.nextInt());
+				System.out.println("Caso esse código já esteja cadastrado, será necessário informar outro.");
+
+			} while (listaProdutos.stream().anyMatch(lista -> lista.getCodigo() == produto.getCodigo()));
+
+			System.out.println("Quantidade em Estoque: ");
+			produto.setQuantidadeEstoque(ler.nextInt());
+
+			System.out.println("Preço: ");
+			produto.setPreco(ler.nextDouble());
+
+			ler.nextLine();
+			System.out.println("Deseja cadastrar outro produto?\nDigite Sim ou Não.");
+		} while (!ler.nextLine().toUpperCase().equals("NÃO"));
 		
 		listaProdutos.add(produto);
 		
+		System.out.println("\nProduto(s) Cadastrado(s)!!!");
+		System.out.println("\n=======Estoque Atual==========");
+		listaProdutos.forEach(ProdutoUtilitarios.mostrarProduto);
 	}
 
 	@Override
 	public void cadastrarCliente() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void excluirProduto() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void excluirCliente() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void cancelarVenda() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void totalVendido() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	
 
 }
