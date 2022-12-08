@@ -10,11 +10,12 @@ public class TelaPrincipal {
 		
 		service.estoque();
 //		service.consultarEstoque();
-		service.cadastrarProduto();
+//		service.cadastrarProduto();
 		
 //		service.clientes();
 //		service.cadastrarCliente();
-		
+	
+		service.saldoTotalVendido();
 	}
 
 }

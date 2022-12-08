@@ -22,6 +22,6 @@ public interface OpcoesInterface {
 	
 	public abstract void cancelarVenda();
 	
-	public abstract void totalVendido();
+	public abstract void saldoTotalVendido();
 
 }

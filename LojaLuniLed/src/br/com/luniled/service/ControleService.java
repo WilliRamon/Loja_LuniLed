@@ -151,9 +151,14 @@ public class ControleService implements OpcoesInterface {
 	}
 
 	@Override
-	public void totalVendido() {
-		// TODO Auto-generated method stub
-
+	public void saldoTotalVendido() {
+		System.out.println("========SALDO TOTAL DE VENDAS=======");
+		listaProdutos.stream()
+		.map(lista -> lista.getPreco())
+		.reduce(ProdutoUtilitarios.saldoTotal)
+		.ifPresent(System.out::println);
+		//REALIZAR CORREÇÃO
+		//ESTÁ CALCULANDO TODOS OS PRODUTOS EM ESTOQUE
 	}
 
 }
