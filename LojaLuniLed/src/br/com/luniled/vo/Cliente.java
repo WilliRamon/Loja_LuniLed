@@ -8,6 +8,13 @@ public class Cliente {
 	private int quantidadeCompras;
 	
 	public Cliente() { }
+	
+	public Cliente(String nomeCliente, String enderecoCliente, long cpf) {
+		this.nomeCliente = nomeCliente;
+		this.enderecoCliente = enderecoCliente;
+		this.cpf = cpf;
+		this.quantidadeCompras = 0;
+	}
 
 	public Cliente(String nomeCliente, String enderecoCliente, long cpf, int quantidadeCompras) {
 		this.nomeCliente = nomeCliente;

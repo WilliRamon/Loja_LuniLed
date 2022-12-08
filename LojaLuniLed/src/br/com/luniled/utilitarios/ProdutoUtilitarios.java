@@ -11,13 +11,9 @@ import br.com.luniled.vo.Produto;
 
 public class ProdutoUtilitarios {
 	
-//	BiFunction<Produto, Integer, Boolean> isCodigoExiste = (produto, codigo) -> {
-//		produto.stream().filter();
-//	};
-
-//	public final static BiFunction<ArrayList<Produto>, Integer, Boolean> isCodigoExiste = (produto, codigo) -> {
-//		return produto.stream() == codigo;
-//	};
+	public final static BiFunction<ArrayList<Produto>, Integer, Boolean> isCodigoExiste = (listaProduto, codigo) -> {
+		return listaProduto.stream().anyMatch(lista -> lista.getCodigo() == codigo);
+	};
 	
 	public final static Consumer<Produto> mostrarProduto = System.out::println;
 	

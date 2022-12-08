@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import br.com.luniled.OpcoesInterface;
+import br.com.luniled.utilitarios.ClienteUtilitarios;
 import br.com.luniled.utilitarios.ProdutoUtilitarios;
 import br.com.luniled.vo.Cliente;
 import br.com.luniled.vo.Produto;
@@ -78,21 +79,23 @@ public class ControleService implements OpcoesInterface {
 			do {
 				System.out.println("Codigo: ");
 				produto.setCodigo(ler.nextInt());
-				System.out.println("Caso esse código já esteja cadastrado, será necessário informar outro.");
+				System.out.println("Caso esse código já esteja cadastrado, será necessário registrar outro.");
 
-			} while (listaProdutos.stream().anyMatch(lista -> lista.getCodigo() == produto.getCodigo()));
-
+			} while (ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
+			
 			System.out.println("Quantidade em Estoque: ");
 			produto.setQuantidadeEstoque(ler.nextInt());
 
 			System.out.println("Preço: ");
 			produto.setPreco(ler.nextDouble());
 
+			listaProdutos.add(new Produto(produto.getNomeProduto(), produto.getCategoria(),
+					produto.getMarca(), produto.getCodigo(), produto.getQuantidadeEstoque(),
+					produto.getPreco()));
+			
 			ler.nextLine();
 			System.out.println("Deseja cadastrar outro produto?\nDigite Sim ou Não.");
 		} while (!ler.nextLine().toUpperCase().equals("NÃO"));
-		
-		listaProdutos.add(produto);
 		
 		System.out.println("\nProduto(s) Cadastrado(s)!!!");
 		System.out.println("\n=======Estoque Atual==========");
@@ -101,8 +104,32 @@ public class ControleService implements OpcoesInterface {
 
 	@Override
 	public void cadastrarCliente() {
-		// TODO Auto-generated method stub
-
+		System.out.println("========CADASTRAR CLIENTE=======");
+		
+		do {
+			System.out.println("Nome: ");
+			cliente.setNomeCliente(ler.nextLine());
+		
+			do {
+				System.out.println("CPF: ");
+				cliente.setCpf(ler.nextLong());
+				System.out.println("Caso esse CPF já esteja cadastrado, será necessário registrar outro.");
+			}while(ClienteUtilitarios.isCodigoCpf.apply(listaClientes, cliente.getCpf()));
+		
+			ler.nextLine();
+			System.out.println("Endereço: ");
+			cliente.setEnderecoCliente(ler.nextLine());
+		
+			listaClientes.add(new Cliente(cliente.getNomeCliente(), cliente.getEnderecoCliente(), cliente.getCpf()));
+			
+			System.out.println("Deseja cadastrar outro cliente?\nDigite Sim ou Não.");
+			
+		}while(!ler.nextLine().toUpperCase().equals("NÃO"));
+		
+		System.out.println("\nCliente(s) Cadastrado(s)!!!");
+		System.out.println("\n=======Registro Atual==========");
+		listaClientes.forEach(ClienteUtilitarios.mostarClientes);
+		
 	}
 
 	@Override
