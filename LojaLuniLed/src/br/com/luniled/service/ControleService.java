@@ -21,9 +21,9 @@ public class ControleService implements OpcoesInterface {
 	ArrayList<Cliente> listaClientes = new ArrayList<>();
 
 	public void estoque() {
-		listaProdutos.add(new Produto("Notebook", "Eletrônico", "Dell", 123, 5, 3800));
-		listaProdutos.add(new Produto("Monitor", "Eletrônico", "Concordia", 124, 10, 1100.50));
-		listaProdutos.add(new Produto("Caderno", "Papelaria", "jandaia", 125, 20, 55.90));
+		listaProdutos.add(new Produto("Notebook", "Eletrônico", "Dell", 123l, 5, 3800));
+		listaProdutos.add(new Produto("Monitor", "Eletrônico", "Concordia", 124l, 10, 1100.50));
+		listaProdutos.add(new Produto("Caderno", "Papelaria", "jandaia", 125l, 20, 55.90));
 	}
 
 	public void clientes() {
@@ -52,7 +52,28 @@ public class ControleService implements OpcoesInterface {
 
 	@Override
 	public void realizarVenda() {
-		// TODO Auto-generated method stub
+		System.out.println("==========TELA DE VENDA=======");
+		this.consultarEstoque();
+		
+		System.out.println("Cliente já está cadastrado?");
+		if(ler.nextLine().toUpperCase().equals("NÃO")) {
+			this.cadastrarCliente();
+		}
+		do {
+			System.out.println("Digite CPF: ");
+			cliente.setCpf(ler.nextLong());
+			System.out.println("Caso esse CPF não seja encontrado, será necessário que digite novamente.");
+		}while(!ClienteUtilitarios.isCpfExiste.apply(listaClientes, cliente.getCpf()));
+
+		do {
+			System.out.println("Digite o código do produto: ");
+			produto.setCodigo(ler.nextLong());	
+			System.out.println("Caso esse código não seja encontrado, será necessário digitar novamente.");
+		}while(!ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
+		
+		//A PARTIR DAQUI, PRECISO QUE TRAGA O PRODUTO NA TELA E JÁ DEBITE DO ESTOQUE
+		
+		
 
 	}
 
@@ -78,7 +99,7 @@ public class ControleService implements OpcoesInterface {
 
 			do {
 				System.out.println("Codigo: ");
-				produto.setCodigo(ler.nextInt());
+				produto.setCodigo(ler.nextLong());
 				System.out.println("Caso esse código já esteja cadastrado, será necessário registrar outro.");
 
 			} while (ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
@@ -114,7 +135,7 @@ public class ControleService implements OpcoesInterface {
 				System.out.println("CPF: ");
 				cliente.setCpf(ler.nextLong());
 				System.out.println("Caso esse CPF já esteja cadastrado, será necessário registrar outro.");
-			}while(ClienteUtilitarios.isCodigoCpf.apply(listaClientes, cliente.getCpf()));
+			}while(ClienteUtilitarios.isCpfExiste.apply(listaClientes, cliente.getCpf()));
 		
 			ler.nextLine();
 			System.out.println("Endereço: ");

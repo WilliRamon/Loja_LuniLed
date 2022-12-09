@@ -8,7 +8,7 @@ import br.com.luniled.vo.Cliente;
 
 public class ClienteUtilitarios {
 	
-	public final static BiFunction<ArrayList<Cliente>, Long, Boolean> isCodigoCpf = (listaCpf, cpf) -> {
+	public final static BiFunction<ArrayList<Cliente>, Long, Boolean> isCpfExiste = (listaCpf, cpf) -> {
 		return listaCpf.stream().anyMatch(lista -> lista.getCpf() == cpf);
 	};
 	
