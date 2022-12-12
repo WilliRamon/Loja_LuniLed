@@ -1,10 +1,8 @@
 package br.com.luniled.service;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import br.com.luniled.OpcoesInterface;
 import br.com.luniled.utilitarios.ClienteUtilitarios;
@@ -19,6 +17,7 @@ public class ControleService implements OpcoesInterface {
 	Cliente cliente = new Cliente();
 	ArrayList<Produto> listaProdutos = new ArrayList<>();
 	ArrayList<Cliente> listaClientes = new ArrayList<>();
+	ArrayList<Produto> listaDeCompras = new ArrayList<>();
 
 	public void estoque() {
 		listaProdutos.add(new Produto("Notebook", "Eletrônico", "Dell", 123l, 5, 3800));
@@ -64,17 +63,42 @@ public class ControleService implements OpcoesInterface {
 			cliente.setCpf(ler.nextLong());
 			System.out.println("Caso esse CPF não seja encontrado, será necessário que digite novamente.");
 		}while(!ClienteUtilitarios.isCpfExiste.apply(listaClientes, cliente.getCpf()));
-
+		
 		do {
-			System.out.println("Digite o código do produto: ");
-			produto.setCodigo(ler.nextLong());	
-			System.out.println("Caso esse código não seja encontrado, será necessário digitar novamente.");
-		}while(!ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
+			do {
+				System.out.println("Digite o código do produto: ");
+				produto.setCodigo(ler.nextLong());	
+				System.out.println("Caso esse código não seja encontrado, será necessário digitar novamente.");
+			}while(!ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
+			
+			listaProdutos.stream()
+			.filter(lista -> lista.getCodigo() == produto.getCodigo())
+			.forEach(produtoEscolhido -> {
+				listaDeCompras.add(produtoEscolhido);
+				System.out.println(produtoEscolhido);
+				});
+			
+			System.out.println("Finalizar Venda?");
+			ler.nextLine();
+		}while(!ler.nextLine().toUpperCase().equals("SIM"));
 		
-		//A PARTIR DAQUI, PRECISO QUE TRAGA O PRODUTO NA TELA E JÁ DEBITE DO ESTOQUE
+		Double totalAPagar = listaDeCompras.stream()
+		.map(lista -> lista.getPreco())
+		.reduce(ProdutoUtilitarios.saldoTotal).get();
 		
-		
+		this.formaDePagamento(totalAPagar);
 
+		System.out.println("Venda Finalizada?");
+		if(ler.nextLine().toUpperCase().equals("SIM")) {
+			//AQUI, PRECISO SUBTRAIR DO ESTOQUE OS PRODUTOS COMPRADOS
+		}
+		
+		
+		
+		
+		System.out.println("FIM");
+		listaDeCompras.forEach(l -> System.out.println(l));
+		//A PARTIR DAQUI, PRECISO QUE TRAGA O PRODUTO NA TELA E JÁ DEBITE DO ESTOQUE
 	}
 
 	@Override
@@ -180,6 +204,25 @@ public class ControleService implements OpcoesInterface {
 		.ifPresent(System.out::println);
 		//REALIZAR CORREÇÃO
 		//ESTÁ CALCULANDO TODOS OS PRODUTOS EM ESTOQUE
+	}
+	
+	public void formaDePagamento(Double saldoTotal) {
+		System.out.println("\nTotal à pagar: " + saldoTotal + "\n");
+		System.out.println("Dinheiro ou Cartão?");
+		String formaPagamento = ler.nextLine();
+		
+		if(formaPagamento.toUpperCase().equals("DINHEIRO")) {
+			System.out.println("Valor Pago: ");
+			
+			double valorPago = ler.nextDouble();
+			double troco = saldoTotal - valorPago;
+			
+			if(troco > 0) {
+				System.out.println("Troco: R$ " + troco);
+			}
+		}
+
+		
 	}
 
 }
