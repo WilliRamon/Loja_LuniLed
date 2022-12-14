@@ -76,6 +76,7 @@ public class ControleService implements OpcoesInterface {
 			.forEach(produtoEscolhido -> {
 				listaDeCompras.add(produtoEscolhido);
 				System.out.println(produtoEscolhido);
+				produtoEscolhido.setQuantidadeEstoque(produtoEscolhido.getQuantidadeEstoque() -1);
 				});
 			
 			System.out.println("Finalizar Venda?");
@@ -88,17 +89,7 @@ public class ControleService implements OpcoesInterface {
 		
 		this.formaDePagamento(totalAPagar);
 
-		System.out.println("Venda Finalizada?");
-		if(ler.nextLine().toUpperCase().equals("SIM")) {
-			//AQUI, PRECISO SUBTRAIR DO ESTOQUE OS PRODUTOS COMPRADOS
-		}
-		
-		
-		
-		
-		System.out.println("FIM");
-		listaDeCompras.forEach(l -> System.out.println(l));
-		//A PARTIR DAQUI, PRECISO QUE TRAGA O PRODUTO NA TELA E JÁ DEBITE DO ESTOQUE
+		System.out.println("Venda Finalizada! Muito Obrigado!!!");
 	}
 
 	@Override
@@ -215,11 +206,12 @@ public class ControleService implements OpcoesInterface {
 			System.out.println("Valor Pago: ");
 			
 			double valorPago = ler.nextDouble();
-			double troco = saldoTotal - valorPago;
+			double troco = valorPago - saldoTotal ;
 			
 			if(troco > 0) {
 				System.out.println("Troco: R$ " + troco);
 			}
+			//Implementar condição caso pagamento seja insuficiente
 		}
 
 		
