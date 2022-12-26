@@ -3,6 +3,7 @@ package br.com.luniled.service;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 import br.com.luniled.OpcoesInterface;
 import br.com.luniled.utilitarios.ClienteUtilitarios;
@@ -54,8 +55,8 @@ public class ControleService implements OpcoesInterface {
 		System.out.println("==========TELA DE VENDA=======");
 		this.consultarEstoque();
 		
-		System.out.println("Cliente já está cadastrado?");
-		if(ler.nextLine().toUpperCase().equals("NÃO")) {
+		System.out.println("Cliente já está cadastrado? (S/N)");
+		if(ler.nextLine().toUpperCase().equals("N")) {
 			this.cadastrarCliente();
 		}
 		do {
@@ -79,9 +80,9 @@ public class ControleService implements OpcoesInterface {
 				produtoEscolhido.setQuantidadeEstoque(produtoEscolhido.getQuantidadeEstoque() -1);
 				});
 			
-			System.out.println("Finalizar Venda?");
+			System.out.println("Finalizar Venda?(S/N)");
 			ler.nextLine();
-		}while(!ler.nextLine().toUpperCase().equals("SIM"));
+		}while(!ler.nextLine().toUpperCase().equals("S"));
 		
 		Double totalAPagar = listaDeCompras.stream()
 		.map(lista -> lista.getPreco())
@@ -130,8 +131,8 @@ public class ControleService implements OpcoesInterface {
 					produto.getPreco()));
 			
 			ler.nextLine();
-			System.out.println("Deseja cadastrar outro produto?\nDigite Sim ou Não.");
-		} while (!ler.nextLine().toUpperCase().equals("NÃO"));
+			System.out.println("Deseja cadastrar outro produto?(S/N)");
+		} while (!ler.nextLine().toUpperCase().equals("N"));
 		
 		System.out.println("\nProduto(s) Cadastrado(s)!!!");
 		System.out.println("\n=======Estoque Atual==========");
@@ -158,9 +159,9 @@ public class ControleService implements OpcoesInterface {
 		
 			listaClientes.add(new Cliente(cliente.getNomeCliente(), cliente.getEnderecoCliente(), cliente.getCpf()));
 			
-			System.out.println("Deseja cadastrar outro cliente?\nDigite Sim ou Não.");
+			System.out.println("Deseja cadastrar outro cliente?(S/N)");
 			
-		}while(!ler.nextLine().toUpperCase().equals("NÃO"));
+		}while(!ler.nextLine().toUpperCase().equals("N"));
 		
 		System.out.println("\nCliente(s) Cadastrado(s)!!!");
 		System.out.println("\n=======Registro Atual==========");
@@ -199,22 +200,31 @@ public class ControleService implements OpcoesInterface {
 	
 	public void formaDePagamento(Double saldoTotal) {
 		System.out.println("\nTotal à pagar: " + saldoTotal + "\n");
-		System.out.println("Dinheiro ou Cartão?");
-		String formaPagamento = ler.nextLine();
+		String formaPagamento;
+		do {
+			System.out.println("Dinheiro ou Cartão? (D/C)");
+			formaPagamento = ler.nextLine();
+			System.out.println("Caso não seja encontrada a forma de pagamento, será preciso digitar novamento.");
+			
+		}while(formaPagamento.toUpperCase().equals("D") || formaPagamento.toUpperCase().equals("C"));
 		
-		if(formaPagamento.toUpperCase().equals("DINHEIRO")) {
-			System.out.println("Valor Pago: ");
-			
+		if(formaPagamento.toUpperCase().equals("D")) {	
+			System.out.println("Informa o Valor Pago: ");
 			double valorPago = ler.nextDouble();
-			double troco = valorPago - saldoTotal ;
+			double troco = valorPago - saldoTotal;
 			
-			if(troco > 0) {
+			while(troco < 0) {
+				System.out.println("Pagamento Insuficiente");
+				System.out.println("Total à pagar: " + Math.abs(troco));
+				System.out.println("Didite o Pagamento: ");
+				double valorComplementar = ler.nextDouble();
+				troco = valorPago + valorComplementar - saldoTotal;
+			}
+			if (troco > 0){
 				System.out.println("Troco: R$ " + troco);
 			}
-			//Implementar condição caso pagamento seja insuficiente
 		}
-
-		
+		//FINALIZAR FORMA DE PAGAMENTO
 	}
 
 }
