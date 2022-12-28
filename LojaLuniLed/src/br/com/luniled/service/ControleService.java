@@ -3,6 +3,8 @@ package br.com.luniled.service;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import br.com.luniled.OpcoesInterface;
@@ -19,6 +21,24 @@ public class ControleService implements OpcoesInterface {
 	ArrayList<Produto> listaProdutos = new ArrayList<>();
 	ArrayList<Cliente> listaClientes = new ArrayList<>();
 	ArrayList<Produto> listaDeCompras = new ArrayList<>();
+	
+	//Interfaces Funcionais - Inicio
+	Predicate<String> isFormaPagamento = escolha -> {
+		if(escolha.equalsIgnoreCase("D")) {
+			return false;
+		}else if(escolha.equalsIgnoreCase("C")) {
+			return false;
+		}
+		return true;
+	};
+	
+	BinaryOperator<Double> calcularTroco = (valorPago, saldoTotal) ->
+			{return valorPago - saldoTotal;};
+			
+	BinaryOperator<Double> calcularTrocoComplementar = (troco, valorComplementar) ->
+			{return troco + valorComplementar;};
+			
+	//Interfaces Funcionais - Fim
 
 	public void estoque() {
 		listaProdutos.add(new Produto("Notebook", "Eletrônico", "Dell", 123l, 5, 3800));
@@ -56,7 +76,7 @@ public class ControleService implements OpcoesInterface {
 		this.consultarEstoque();
 		
 		System.out.println("Cliente já está cadastrado? (S/N)");
-		if(ler.nextLine().toUpperCase().equals("N")) {
+		if(ler.nextLine().equalsIgnoreCase("N")) {
 			this.cadastrarCliente();
 		}
 		do {
@@ -82,7 +102,7 @@ public class ControleService implements OpcoesInterface {
 			
 			System.out.println("Finalizar Venda?(S/N)");
 			ler.nextLine();
-		}while(!ler.nextLine().toUpperCase().equals("S"));
+		}while(!ler.nextLine().equalsIgnoreCase("S"));
 		
 		Double totalAPagar = listaDeCompras.stream()
 		.map(lista -> lista.getPreco())
@@ -132,7 +152,7 @@ public class ControleService implements OpcoesInterface {
 			
 			ler.nextLine();
 			System.out.println("Deseja cadastrar outro produto?(S/N)");
-		} while (!ler.nextLine().toUpperCase().equals("N"));
+		} while (!ler.nextLine().equalsIgnoreCase("N"));
 		
 		System.out.println("\nProduto(s) Cadastrado(s)!!!");
 		System.out.println("\n=======Estoque Atual==========");
@@ -161,7 +181,7 @@ public class ControleService implements OpcoesInterface {
 			
 			System.out.println("Deseja cadastrar outro cliente?(S/N)");
 			
-		}while(!ler.nextLine().toUpperCase().equals("N"));
+		}while(!ler.nextLine().equalsIgnoreCase("N"));
 		
 		System.out.println("\nCliente(s) Cadastrado(s)!!!");
 		System.out.println("\n=======Registro Atual==========");
@@ -199,32 +219,33 @@ public class ControleService implements OpcoesInterface {
 	}
 	
 	public void formaDePagamento(Double saldoTotal) {
-		System.out.println("\nTotal à pagar: " + saldoTotal + "\n");
+		System.out.println("\nTotal à pagar: " + saldoTotal);
 		String formaPagamento;
 		do {
 			System.out.println("Dinheiro ou Cartão? (D/C)");
 			formaPagamento = ler.nextLine();
 			System.out.println("Caso não seja encontrada a forma de pagamento, será preciso digitar novamento.");
-			
-		}while(formaPagamento.toUpperCase().equals("D") || formaPagamento.toUpperCase().equals("C"));
+		}while(isFormaPagamento.test(formaPagamento));
 		
-		if(formaPagamento.toUpperCase().equals("D")) {	
-			System.out.println("Informa o Valor Pago: ");
+		if(formaPagamento.equalsIgnoreCase("D")) {	
+			System.out.println("Digite Pagamento: ");
 			double valorPago = ler.nextDouble();
-			double troco = valorPago - saldoTotal;
+			double troco = calcularTroco.apply(valorPago, saldoTotal);
+			
+			double valorComplementar = 0;
 			
 			while(troco < 0) {
 				System.out.println("Pagamento Insuficiente");
 				System.out.println("Total à pagar: " + Math.abs(troco));
-				System.out.println("Didite o Pagamento: ");
-				double valorComplementar = ler.nextDouble();
-				troco = valorPago + valorComplementar - saldoTotal;
+				System.out.println("Digite o Pagamento: ");
+				valorComplementar += ler.nextDouble();
+				troco = calcularTroco.apply(valorPago, saldoTotal);
+				troco = calcularTrocoComplementar.apply(troco, valorComplementar);
 			}
 			if (troco > 0){
 				System.out.println("Troco: R$ " + troco);
 			}
 		}
-		//FINALIZAR FORMA DE PAGAMENTO
 	}
 
 }
