@@ -21,6 +21,7 @@ public class ControleService implements OpcoesInterface {
 	ArrayList<Produto> listaProdutos = new ArrayList<>();
 	ArrayList<Cliente> listaClientes = new ArrayList<>();
 	ArrayList<Produto> listaDeCompras = new ArrayList<>();
+	ArrayList<Produto> totalVendido = new ArrayList<>();
 	
 	//Interfaces Funcionais - Inicio
 	Predicate<String> isFormaPagamento = escolha -> {
@@ -96,6 +97,7 @@ public class ControleService implements OpcoesInterface {
 			.filter(lista -> lista.getCodigo() == produto.getCodigo())
 			.forEach(produtoEscolhido -> {
 				listaDeCompras.add(produtoEscolhido);
+				//totalVendido.addAll(listaDeCompras);
 				System.out.println(produtoEscolhido);
 				produtoEscolhido.setQuantidadeEstoque(produtoEscolhido.getQuantidadeEstoque() -1);
 				});
@@ -210,7 +212,7 @@ public class ControleService implements OpcoesInterface {
 	@Override
 	public void saldoTotalVendido() {
 		System.out.println("========SALDO TOTAL DE VENDAS=======");
-		listaProdutos.stream()
+		listaDeCompras.stream()
 		.map(lista -> lista.getPreco())
 		.reduce(ProdutoUtilitarios.saldoTotal)
 		.ifPresent(System.out::println);

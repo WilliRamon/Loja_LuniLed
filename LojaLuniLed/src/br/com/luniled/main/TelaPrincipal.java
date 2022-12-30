@@ -18,6 +18,10 @@ public class TelaPrincipal {
 //		service.saldoTotalVendido();
 		
 		service.realizarVenda();
+		service.realizarVenda();
+
+		service.saldoTotalVendido();
+		
 	}
 
 }
