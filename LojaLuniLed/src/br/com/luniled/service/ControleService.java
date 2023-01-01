@@ -193,7 +193,29 @@ public class ControleService implements OpcoesInterface {
 
 	@Override
 	public void excluirProduto() {
-		// TODO Auto-generated method stub
+		System.out.println("========EXCLUIR PRODUTO=======");
+		do {
+			do {
+				System.out.println("Digite o código do produto que deseja exluir: ");
+				produto.setCodigo(ler.nextLong());	
+				System.out.println("Caso esse código não seja encontrado, será necessário digitar novamente.");
+			}while(!ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
+			
+			System.out.println("Produto Selecionado: " + produto.getNomeProduto() + ". Confirmar? (S/N)");
+			ler.nextLine();
+			if(ler.nextLine().equalsIgnoreCase("S")) {
+				listaProdutos.stream()
+				.filter(lista -> lista.getCodigo() == produto.getCodigo())
+				.forEach(produtoEscolhido -> {
+					listaProdutos.remove(produtoEscolhido);
+				});
+				//Corrigir esse método
+				System.out.println("Produto Exluido.");
+			}
+			System.out.println("Deseja Excluir outro produto?(S/N)");
+			ler.nextLine();
+		}while(ler.nextLine().equalsIgnoreCase("S"));
+		
 
 	}
 
