@@ -20,8 +20,6 @@ public interface OpcoesInterface {
 	
 	public abstract void excluirCliente();
 	
-	public abstract void cancelarVenda();
-	
 	public abstract void saldoTotalVendido();
 
 }

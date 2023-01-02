@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import br.com.luniled.OpcoesInterface;
 import br.com.luniled.utilitarios.ClienteUtilitarios;
@@ -30,6 +31,12 @@ public class ControleService implements OpcoesInterface {
 		}else if(escolha.equalsIgnoreCase("C")) {
 			return false;
 		}
+		return true;
+	};
+	
+	Predicate<String> isSimOuNao = escolha -> { 
+		if(escolha.equalsIgnoreCase("S")) { return false; }
+		else if(escolha.equalsIgnoreCase("N")) { return false; }
 		return true;
 	};
 	
@@ -73,11 +80,18 @@ public class ControleService implements OpcoesInterface {
 
 	@Override
 	public void realizarVenda() {
+		ler.nextLine();
 		System.out.println("==========TELA DE VENDA=======");
 		this.consultarEstoque();
+		String escolha;
 		
-		System.out.println("Cliente já está cadastrado? (S/N)");
-		if(ler.nextLine().equalsIgnoreCase("N")) {
+		do {
+			System.out.println("Caso cadastro não seja encontrado, será necessário digitar novamente.");
+			System.out.println("Cliente já está cadastrado? (S/N)");
+			escolha = ler.nextLine();
+		}while(isSimOuNao.test(escolha));
+		
+		if(escolha.equalsIgnoreCase("N")) {
 			this.cadastrarCliente();
 		}
 		do {
@@ -97,16 +111,22 @@ public class ControleService implements OpcoesInterface {
 			.filter(lista -> lista.getCodigo() == produto.getCodigo())
 			.forEach(produtoEscolhido -> {
 				listaDeCompras.add(produtoEscolhido);
-				//totalVendido.addAll(listaDeCompras);
+				totalVendido.addAll(listaDeCompras);
 				System.out.println(produtoEscolhido);
 				produtoEscolhido.setQuantidadeEstoque(produtoEscolhido.getQuantidadeEstoque() -1);
 				});
 			
-			System.out.println("Finalizar Venda?(S/N)");
 			ler.nextLine();
-		}while(!ler.nextLine().equalsIgnoreCase("S"));
+			do {
+				System.out.println("Caso a opção escolhida seja diferente de 'S' ou 'N', será necessário digitar novamente.");
+				System.out.println("Finalizar Venda?(S/N)");
+				escolha = ler.nextLine();
+			}while(isSimOuNao.test(escolha));
+		}while(!escolha.equalsIgnoreCase("S"));
 		
-		Double totalAPagar = listaDeCompras.stream()
+		//Corrigir calculo totalAPagar
+		Double totalAPagar = 0.0;
+		totalAPagar = listaDeCompras.stream()
 		.map(lista -> lista.getPreco())
 		.reduce(ProdutoUtilitarios.saldoTotal).get();
 		
@@ -139,7 +159,6 @@ public class ControleService implements OpcoesInterface {
 				System.out.println("Codigo: ");
 				produto.setCodigo(ler.nextLong());
 				System.out.println("Caso esse código já esteja cadastrado, será necessário registrar outro.");
-
 			} while (ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
 			
 			System.out.println("Quantidade em Estoque: ");
@@ -196,38 +215,59 @@ public class ControleService implements OpcoesInterface {
 		System.out.println("========EXCLUIR PRODUTO=======");
 		do {
 			do {
+				System.out.println("Caso esse código não seja encontrado, será necessário digitar novamente.");
 				System.out.println("Digite o código do produto que deseja exluir: ");
 				produto.setCodigo(ler.nextLong());	
-				System.out.println("Caso esse código não seja encontrado, será necessário digitar novamente.");
 			}while(!ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
 			
-			System.out.println("Produto Selecionado: " + produto.getNomeProduto() + ". Confirmar? (S/N)");
+			String escolha;
 			ler.nextLine();
-			if(ler.nextLine().equalsIgnoreCase("S")) {
+			do {
+				System.out.println("Caso a opção escolhida seja diferente de 'S' ou 'N', será necessário digitar novamente.");
 				listaProdutos.stream()
 				.filter(lista -> lista.getCodigo() == produto.getCodigo())
-				.forEach(produtoEscolhido -> {
-					listaProdutos.remove(produtoEscolhido);
-				});
-				//Corrigir esse método
+				.forEach(produtoEscolhido -> 
+				System.out.println("Produto Selecionado: " + produtoEscolhido.getNomeProduto() + ". Confirmar? (S/N)"));
+				
+				escolha = ler.nextLine();
+			}while(isSimOuNao.test(escolha));
+			
+			if(escolha.equalsIgnoreCase("S")) {
+				listaProdutos.removeIf(lista -> lista.getCodigo() == produto.getCodigo());
 				System.out.println("Produto Exluido.");
 			}
 			System.out.println("Deseja Excluir outro produto?(S/N)");
-			ler.nextLine();
 		}while(ler.nextLine().equalsIgnoreCase("S"));
-		
-
 	}
 
 	@Override
 	public void excluirCliente() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void cancelarVenda() {
-		// TODO Auto-generated method stub
+		System.out.println("========EXCLUIR CADASTRO DE CLIENTE=======");
+		do {
+			do {
+				System.out.println("Caso o cadastro não seja encontrado, será necessário digitar novamente.");
+				System.out.println("Digite o CPF do cadastro que deseja exluir: ");
+				cliente.setCpf(ler.nextLong());	
+			}while(!ClienteUtilitarios.isCpfExiste.apply(listaClientes, cliente.getCpf()));
+			
+			String escolha;
+			ler.nextLine();
+			do {
+				System.out.println("Caso a opção escolhida seja diferente de 'S' ou 'N', será necessário digitar novamente.");
+				listaClientes.stream()
+				.filter(lista -> lista.getCpf() == cliente.getCpf())
+				.forEach(clienteEscolhido -> 
+				System.out.println("Cadastro Selecionado: " + clienteEscolhido.getNomeCliente() + ". Confirmar? (S/N)"));
+				
+				escolha = ler.nextLine();
+			}while(isSimOuNao.test(escolha));
+			
+			if(escolha.equalsIgnoreCase("S")) {
+				listaClientes.removeIf(lista -> lista.getCpf() == cliente.getCpf());
+				System.out.println("Cadastro Exluido.");
+			}
+			System.out.println("Deseja Excluir outro cadastro?(S/N)");
+		}while(ler.nextLine().equalsIgnoreCase("S"));
 
 	}
 

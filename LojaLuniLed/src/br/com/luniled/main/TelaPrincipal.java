@@ -17,14 +17,16 @@ public class TelaPrincipal {
 	
 //		service.saldoTotalVendido();
 		
-//		service.realizarVenda();
-//		service.realizarVenda();
+		service.realizarVenda();
+		service.realizarVenda();
 
-//		service.saldoTotalVendido();
+		service.saldoTotalVendido();
 		
-		service.excluirProduto();
-		service.estoque();
+//		service.excluirProduto();
+//		service.consultarEstoque();
 		
+//		service.excluirCliente();
+//		service.consultarClientesCadastrados();
 	}
 
 }
