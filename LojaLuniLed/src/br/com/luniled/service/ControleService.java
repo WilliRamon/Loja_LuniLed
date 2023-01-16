@@ -24,29 +24,11 @@ public class ControleService implements OpcoesInterface {
 	ArrayList<Produto> listaDeCompras = new ArrayList<>();
 	ArrayList<Produto> totalVendido = new ArrayList<>();
 	
-	//Interfaces Funcionais - Inicio
-	Predicate<String> isFormaPagamento = escolha -> {
-		if(escolha.equalsIgnoreCase("D")) {
-			return false;
-		}else if(escolha.equalsIgnoreCase("C")) {
-			return false;
-		}
-		return true;
-	};
-	
 	Predicate<String> isSimOuNao = escolha -> { 
 		if(escolha.equalsIgnoreCase("S")) { return false; }
 		else if(escolha.equalsIgnoreCase("N")) { return false; }
 		return true;
 	};
-	
-	BinaryOperator<Double> calcularTroco = (valorPago, saldoTotal) ->
-			{return valorPago - saldoTotal;};
-			
-	BinaryOperator<Double> calcularTrocoComplementar = (troco, valorComplementar) ->
-			{return troco + valorComplementar;};
-			
-	//Interfaces Funcionais - Fim
 
 	public void estoque() {
 		listaProdutos.add(new Produto("Notebook", "Eletrônico", "Dell", 123l, 5, 3800));
@@ -69,13 +51,13 @@ public class ControleService implements OpcoesInterface {
 	@Override
 	public void consultarEstoque() {
 		System.out.println("========CONSULTAR ESTOQUE========");
-		listaProdutos.forEach(livro -> System.out.println(livro));
+		listaProdutos.forEach(ProdutoUtilitarios.mostrarProduto);
 	}
 
 	@Override
 	public void consultarClientesCadastrados() {
 		System.out.println("==========CONSULTAR CLINTES CADASTRADOS=======");
-		listaClientes.forEach(cliente -> System.out.println(cliente));
+		listaClientes.forEach(ClienteUtilitarios.mostarClientes);
 	}
 
 	@Override
@@ -107,6 +89,7 @@ public class ControleService implements OpcoesInterface {
 				System.out.println("Caso esse código não seja encontrado, será necessário digitar novamente.");
 			}while(!ProdutoUtilitarios.isCodigoExiste.apply(listaProdutos, produto.getCodigo()));
 			
+			listaDeCompras.clear();
 			listaProdutos.stream()
 			.filter(lista -> lista.getCodigo() == produto.getCodigo())
 			.forEach(produtoEscolhido -> {
@@ -124,10 +107,9 @@ public class ControleService implements OpcoesInterface {
 			}while(isSimOuNao.test(escolha));
 		}while(!escolha.equalsIgnoreCase("S"));
 		
-		//Corrigir calculo totalAPagar
 		Double totalAPagar = 0.0;
 		totalAPagar = listaDeCompras.stream()
-		.map(lista -> lista.getPreco())
+		.map(ProdutoUtilitarios.mapearPrecoProduto)
 		.reduce(ProdutoUtilitarios.saldoTotal).get();
 		
 		this.formaDePagamento(totalAPagar);
@@ -137,8 +119,10 @@ public class ControleService implements OpcoesInterface {
 
 	@Override
 	public void consultarVendasRealizadas() {
-		// TODO Auto-generated method stub
-
+		System.out.println("==========Consulta de Vendas=======");
+		totalVendido.stream()
+					.map(ProdutoUtilitarios.mapearNomeProduto)
+					.forEach(ProdutoUtilitarios.mostrarProdutoInString);
 	}
 
 	@Override
@@ -274,12 +258,10 @@ public class ControleService implements OpcoesInterface {
 	@Override
 	public void saldoTotalVendido() {
 		System.out.println("========SALDO TOTAL DE VENDAS=======");
-		listaDeCompras.stream()
-		.map(lista -> lista.getPreco())
+		totalVendido.stream()
+		.map(ProdutoUtilitarios.mapearPrecoProduto)
 		.reduce(ProdutoUtilitarios.saldoTotal)
 		.ifPresent(System.out::println);
-		//REALIZAR CORREÇÃO
-		//ESTÁ CALCULANDO TODOS OS PRODUTOS EM ESTOQUE
 	}
 	
 	public void formaDePagamento(Double saldoTotal) {
@@ -289,22 +271,20 @@ public class ControleService implements OpcoesInterface {
 			System.out.println("Dinheiro ou Cartão? (D/C)");
 			formaPagamento = ler.nextLine();
 			System.out.println("Caso não seja encontrada a forma de pagamento, será preciso digitar novamento.");
-		}while(isFormaPagamento.test(formaPagamento));
+		}while(ProdutoUtilitarios.isFormaPagamento.test(formaPagamento));
 		
 		if(formaPagamento.equalsIgnoreCase("D")) {	
 			System.out.println("Digite Pagamento: ");
 			double valorPago = ler.nextDouble();
-			double troco = calcularTroco.apply(valorPago, saldoTotal);
-			
+			double troco = ProdutoUtilitarios.calcularTroco.apply(valorPago, saldoTotal);
 			double valorComplementar = 0;
-			
 			while(troco < 0) {
 				System.out.println("Pagamento Insuficiente");
 				System.out.println("Total à pagar: " + Math.abs(troco));
 				System.out.println("Digite o Pagamento: ");
 				valorComplementar += ler.nextDouble();
-				troco = calcularTroco.apply(valorPago, saldoTotal);
-				troco = calcularTrocoComplementar.apply(troco, valorComplementar);
+				troco = ProdutoUtilitarios.calcularTroco.apply(valorPago, saldoTotal);
+				troco = ProdutoUtilitarios.calcularTrocoComplementar.apply(troco, valorComplementar);
 			}
 			if (troco > 0){
 				System.out.println("Troco: R$ " + troco);
