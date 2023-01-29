@@ -3,6 +3,7 @@ package br.com.luniled.service;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -62,7 +63,6 @@ public class ControleService implements OpcoesInterface {
 
 	@Override
 	public void realizarVenda() {
-		ler.nextLine();
 		System.out.println("==========TELA DE VENDA=======");
 		this.consultarEstoque();
 		String escolha;
@@ -150,10 +150,12 @@ public class ControleService implements OpcoesInterface {
 
 			System.out.println("Preço: ");
 			produto.setPreco(ler.nextDouble());
+			
+			listaProdutos.add(produto);
 
-			listaProdutos.add(new Produto(produto.getNomeProduto(), produto.getCategoria(),
-					produto.getMarca(), produto.getCodigo(), produto.getQuantidadeEstoque(),
-					produto.getPreco()));
+//			listaProdutos.add(new Produto(produto.getNomeProduto(), produto.getCategoria(),
+//					produto.getMarca(), produto.getCodigo(), produto.getQuantidadeEstoque(),
+//					produto.getPreco()));
 			
 			ler.nextLine();
 			System.out.println("Deseja cadastrar outro produto?(S/N)");
@@ -182,7 +184,8 @@ public class ControleService implements OpcoesInterface {
 			System.out.println("Endereço: ");
 			cliente.setEnderecoCliente(ler.nextLine());
 		
-			listaClientes.add(new Cliente(cliente.getNomeCliente(), cliente.getEnderecoCliente(), cliente.getCpf()));
+			listaClientes.add(cliente);
+//			listaClientes.add(new Cliente(cliente.getNomeCliente(), cliente.getEnderecoCliente(), cliente.getCpf()));
 			
 			System.out.println("Deseja cadastrar outro cliente?(S/N)");
 			

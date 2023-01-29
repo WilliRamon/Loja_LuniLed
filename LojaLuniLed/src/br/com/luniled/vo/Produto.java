@@ -20,7 +20,7 @@ public class Produto {
 		this.quantidadeEstoque = quantidadeEstoque;
 		this.preco = preco;
 	}
-	
+		
 	@Override
 	public String toString() {
 		return "Produto: " + nomeProduto + "\nCategoria: " + categoria + "\nMarca: " + marca + "\nCodigo: "
